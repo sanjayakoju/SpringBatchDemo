@@ -28,7 +28,7 @@ services:
     environment:
       DB_URL: mysql-batch
       MYSQL_USER: admin
-      MYSQL_PASSWORD: password
+      MYSQL_PASSWORD: root@1234
     ports:
       - "8080:8080"
     networks:
