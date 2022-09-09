@@ -1,24 +1,40 @@
 package com.spring_batch.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.spring_batch.enums.UserRole;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class User {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String dept;
-    private Double salary;
+    @Column(unique = true)
+    private String username;
+    private String password;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
+    )
+
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @JsonIgnore
+    private Set<UserRole> roles = new HashSet<>();
 
     public User() {
     }
 
-    public User(Long id, String name, String dept, Double salary) {
-        this.id = id;
-        this.name = name;
-        this.dept = dept;
-        this.salary = salary;
+    public User(String username, String password, Set<UserRole> roles) {
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
     }
 
     public Long getId() {
@@ -29,37 +45,27 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getDept() {
-        return dept;
+    public String getPassword() {
+        return password;
     }
 
-    public void setDept(String dept) {
-        this.dept = dept;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public Double getSalary() {
-        return salary;
+    public Set<UserRole> getRoles() {
+        return roles;
     }
 
-    public void setSalary(Double salary) {
-        this.salary = salary;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", dept='" + dept + '\'' +
-                ", salary=" + salary +
-                '}';
+    public void setRoles(Set<UserRole> roles) {
+        this.roles = roles;
     }
 }

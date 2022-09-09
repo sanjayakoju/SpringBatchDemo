@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  mysql-batch:
+    container_name: mysql-batch-server
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root@1234
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: root@1234
+      MYSQL_DATABASE: student
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+    volumes:
+      - my-datavolume:/var/lib/mysql
+    networks:
+      - myNetwork
+  app:
+    container_name: app-server
+    depends_on:
+      mysql-batch:
+        condition: service_healthy
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DB_URL: mysql-batch
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: password
+    ports:
+      - "8080:8080"
+    networks:
+      - myNetwork
+    restart: on-failure
+
+volumes:
+  my-datavolume:
+networks:
+  myNetwork:
+    name: myNetwork
+    driver: bridge

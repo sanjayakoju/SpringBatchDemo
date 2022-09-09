@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/load")
-public class LoadController {
+@RequestMapping("/job")
+public class JobController {
 
     @Autowired
     JobLauncher jobLauncher;
@@ -23,7 +23,7 @@ public class LoadController {
     @Autowired
     Job job;
 
-    @GetMapping
+    @GetMapping("load-students")
     public BatchStatus load() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
         Map<String , JobParameter> maps = new HashMap<>();
         maps.put("time", new JobParameter(System.currentTimeMillis()));

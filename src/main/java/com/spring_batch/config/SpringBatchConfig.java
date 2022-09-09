@@ -1,6 +1,7 @@
 package com.spring_batch.config;
 
-import com.spring_batch.model.User;
+import com.spring_batch.model.Student;
+import com.spring_batch.model.StudentCSV;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -18,6 +19,7 @@ import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -27,11 +29,11 @@ public class SpringBatchConfig {
 
     @Bean
     public Job job(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory,
-                   ItemReader<User> itemReader, ItemProcessor<User, User> itemProcessor,
-                   ItemWriter<User> itemWriter) {
+                   ItemReader<StudentCSV> itemReader, ItemProcessor<StudentCSV, Student> itemProcessor,
+                   ItemWriter<Student> itemWriter) {
 
         Step step = stepBuilderFactory.get("ETL-file-load")
-                .<User, User>chunk(100)
+                .<StudentCSV, Student>chunk(100)
                 .reader(itemReader)
                 .processor(itemProcessor)
                 .writer(itemWriter)
@@ -44,10 +46,10 @@ public class SpringBatchConfig {
     }
 
     @Bean
-    public FlatFileItemReader<User> itemReader(@Value("${input}") Resource resource) {
-        FlatFileItemReader<User> flatFileItemReader = new FlatFileItemReader<>();
-        flatFileItemReader.setResource(new FileSystemResource("src/main/resources/users.csv"));
-//        flatFileItemReader.setResource(resource);
+    public FlatFileItemReader<StudentCSV> itemReader(@Value("${input}") ClassPathResource resource) {
+        FlatFileItemReader<StudentCSV> flatFileItemReader = new FlatFileItemReader<>();
+//        flatFileItemReader.setResource(new FileSystemResource("src/main/resources/students.csv"));
+        flatFileItemReader.setResource(resource);
         flatFileItemReader.setName("CSV-Reader");
         flatFileItemReader.setLinesToSkip(1);
         flatFileItemReader.setLineMapper(lineMapper());
@@ -55,15 +57,15 @@ public class SpringBatchConfig {
     }
 
     @Bean
-    public LineMapper<User> lineMapper() {
-        DefaultLineMapper<User> defaultLineMapper = new DefaultLineMapper<>();
+    public LineMapper<StudentCSV> lineMapper() {
+        DefaultLineMapper<StudentCSV> defaultLineMapper = new DefaultLineMapper<>();
         DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
         lineTokenizer.setDelimiter(",");
         lineTokenizer.setStrict(false);
-        lineTokenizer.setNames("id", "name","dept","salary");
+        lineTokenizer.setNames("first","last","GPA","AGE");
 
-        BeanWrapperFieldSetMapper<User> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
-        fieldSetMapper.setTargetType(User.class);
+        BeanWrapperFieldSetMapper<StudentCSV> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        fieldSetMapper.setTargetType(StudentCSV.class);
 
         defaultLineMapper.setLineTokenizer(lineTokenizer);
         defaultLineMapper.setFieldSetMapper(fieldSetMapper);
