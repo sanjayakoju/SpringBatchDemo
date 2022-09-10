@@ -10,6 +10,4 @@ import java.util.Set;
 public class AuthResponseDTO {
 
     private String token;
-    private LocalDateTime timestamp;
-    private Set<UserRole> roles;
 }
