@@ -18,12 +18,13 @@ services:
       - my-network
   app:
     container_name: app-server
+    image: sanjayakoju/springbatchdemo-app
     depends_on:
       mysql-server:
         condition: service_healthy
-    build:
-      context: .
-      dockerfile: Dockerfile
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
     environment:
       DATABASE_URL: mysql-server
       MYSQL_USER_NAME: root
