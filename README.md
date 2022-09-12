@@ -1,5 +1,8 @@
+Team Members Name
+Sanjaya Koju
+Jhon Edward Ramirez Briceno
+
 First, unzip the file
-run the docker compose build command
 run the docker compose up for start and docker compose down to stop
 Hit an api: localhost:8080/auth/login to access token
 pass request body username = admin and password = admin which have ADMIN role or
