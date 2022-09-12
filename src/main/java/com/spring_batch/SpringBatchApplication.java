@@ -38,11 +38,17 @@ public class SpringBatchApplication implements CommandLineRunner {
         Optional<User> user = userRepository.findByUsername(username);
         if (!user.isPresent()) {
             String newUserPassword = passwordEncoder.encode(password);
-            User defaultUser = new User();
-            defaultUser.setUsername(username);
-            defaultUser.setPassword(newUserPassword);
-            defaultUser.setRoles(Set.of(UserRole.ADMIN));
-            userRepository.save(defaultUser);
+            User adminUser = new User();
+            adminUser.setUsername(username);
+            adminUser.setPassword(newUserPassword);
+            adminUser.setRoles(Set.of(UserRole.ADMIN));
+
+            User normalUser = new User();
+            normalUser.setUsername("user");
+            normalUser.setPassword(passwordEncoder.encode("user@123"));
+            normalUser.setRoles(Set.of(UserRole.USER));
+            userRepository.save(adminUser);
+            userRepository.save(normalUser);
         }
     }
 }
